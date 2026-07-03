@@ -1,0 +1,91 @@
+EXTENSION 1 : Extreme-Value & Collision-Entropy Analysis of rho_1(n)
+======================================================================
+N (upper bound analysed)   : 6000000
+Threads used                : 10
+
+--- Step 1: External reference dataset (OEIS A003072) ---
+Downloaded OEIS A003072 ("numbers that are the sum of 3 positive
+cubes") successfully: 12955 terms.
+
+--- Step 2: Independent from-scratch sieve for rho_1(n), n<=N ---
+R(N) computed by our sieve  : 615245
+R(N)/N                      : 0.102541
+Conjectured density (paper) : 0.0999425
+
+--- Step 3: Cross-check against the paper's published Table 1 ---
+N           R(N) [paper]    R(N) [ours]     match?
+100         15              15              MATCH
+1000        126             126             MATCH
+10000       1154            1154            MATCH
+100000      10831           10831           MATCH
+1000000     104252          104252          MATCH
+
+--- Step 4: Cross-check against downloaded OEIS A003072 ---
+Compared up to n=119980 : 119980 agree, 0 disagree.
+
+--- Step 5: Extreme-value theory applied to rho_1(n) ---
+Motivation: the paper's whole Cauchy-Schwarz argument (Section 2.1)
+implicitly needs rho_1(n) to NOT be typically huge whenever nonzero —
+the 'enemy scenario' it never rules out unconditionally. Extreme value
+theory is the correct classical machinery (Fisher-Tippett-Gnedenko,
+1928/1943) for characterising how large the largest few outcomes of a
+counting process can plausibly get.
+
+Gumbel (GEV, shape=0) fit to 200 block maxima of rho_1(n) over blocks of size ~30000:
+   location (mu)   = 28.1901
+   scale    (beta) = 3.55136
+
+Running record max of rho_1(n) at dyadic checkpoints (n<=N):
+N_checkpoint  max rho_1
+64            6         
+128           6         
+256           9         
+512           9         
+1024          12        
+2048          12        
+4096          12        
+8192          18        
+16384         24        
+32768         24        
+65536         24        
+131072        24        
+262144        30        
+524288        30        
+1048576       30        
+2097152       42        
+4194304       48        
+6000000       48        
+
+Log-log regression  log(max rho_1) ~ slope * log(N):
+   fitted growth exponent = 0.178466   (R^2 = 0.959783)
+   Mahler's proven family gives exponent >= 1/12 = 0.0833333 (Mahler, JLMS 1936).
+   Hardy-Littlewood's ORIGINAL (disproved) conjecture predicted
+   exponent 0 (i.e. n^o(1), sub-polynomial growth).
+   Our measured exponent is clearly positive, consistent with Mahler's bound and inconsistent with Hardy-Littlewood's original o(1) guess.
+
+--- Step 6: EXACT Cauchy-Schwarz tightness (no o(1) terms) ---
+The paper's central inequality (its eq. 2.1) is:
+   R(N) >= (sum rho_1(n))^2 / (sum rho_1(n)^2)
+Every theorem in the paper only ever discusses the EXPONENT this
+produces as N -> infinity with an implicit o(1) slack. Here we just
+compute both sides EXACTLY for our finite N and report the ratio —
+a number the asymptotic theory structurally cannot hand you.
+
+sum rho_1(n)                = 4.22878e+06
+sum rho_1(n)^2               = 3.36202e+07
+Cauchy-Schwarz lower bound   = 531900
+True R(N)                   = 615245
+Tightness ratio (CS/true)    = 0.864533   (1.0 would mean the inequality is exactly tight)
+
+--- Summary: what the paper proves vs. what this extension measures ---
+Paper (Davenport/Vaughan/Wooley): proves R(N) >= N^{beta-eps} for
+  beta = 47/54, 8/9, 11/12, 0.91709477..., each via a DIFFERENT proof
+  technique, entirely asymptotic, with no explicit constants.
+This extension: measures, at a real finite N, exactly how tight the
+  shared Cauchy-Schwarz backbone of ALL those proofs actually is
+  (tightness ratio above), and gives the first (to the sources we
+  surveyed) extreme-value-theoretic characterisation of how large
+  rho_1(n) actually gets, directly testing the 'enemy scenario'
+  the paper's whole approach depends on never happening.
+
+Total wall-clock time        : 1.88968 s

@@ -1,0 +1,90 @@
+EXTENSION 5 : Parallel Sieve + Asymptotic Convergence-Rate Regression
+======================================================================
+N_max (largest N reached)  : 1000000000
+Threads used                : 10
+
+--- Step 1: External reference dataset (OEIS A003072) ---
+Downloaded OEIS A003072: 12955 terms.
+
+--- Step 2: Parallel presence-only sieve up to N=1000000000 ---
+
+--- Step 3: Cross-check against the paper's published Table 1 ---
+N             R(N)[paper]     R(N)[ours]      match?
+100           15              15              MATCH
+1000          126             126             MATCH
+10000         1154            1154            MATCH
+100000        10831           10831           MATCH
+1000000       104252          104252          MATCH
+10000000      1021534         1021534         MATCH
+100000000     10098476        10098476        MATCH
+1000000000    100395189       100395189       MATCH
+
+--- Step 4: R(N)/N across the full checkpoint range (paper's table + beyond) ---
+N             R(N)          R(N)/N
+100           15            0.1500000
+1000          126           0.1260000
+10000         1154          0.1154000
+100000        10831         0.1083100
+1000000       104252        0.1042520
+10000000      1021534       0.1021534
+20000000      2033917       0.1016959
+40000000      4054630       0.1013658
+80000000      8085036       0.1010629
+100000000     10098476      0.1009848
+160000000     16131537      0.1008221
+320000000     32204235      0.1006382
+640000000     64309243      0.1004832
+1000000000    100395189     0.1003952
+
+--- Step 5: Competing models for the second-order term of R(N)/N ---
+Model A: R(N)/N = c0 + c1 * N^(-p)      (p profiled by grid search)
+Model B: R(N)/N = c0 + c1 / log(N)
+Model C: R(N)/N = c0 + c1 / log(N) + c2 / log(N)^2
+
+Model A : c0=0.099708547  c1=0.167080837  p=0.262000000  RSS=0.000001945  AIC=-217.048533678  BIC=-215.770419019
+          (p counted as 1 profiled shape parameter in addition to
+           c0,c1 for AIC/BIC purposes -> effective k=3)
+          with k=3: AIC=-215.048533678  BIC=-213.131361690
+Model B : c0=0.084694216  c1=0.292929677  RSS=0.000017875  AIC=-185.996246234  BIC=-184.718131574
+Model C : c0=0.089886607  c1=0.179716091  c2=0.452114875  RSS=0.000004161  AIC=-204.403425388  BIC=-202.486253399
+
+Model ranking by AIC (lower is better):
+  A (power-law N^-p)   AIC=-215.048533678   BIC=-213.131361690   implied limiting density c0=0.099708547
+  C (1/log N + 1/log^2 N)   AIC=-204.403425388   BIC=-202.486253399   implied limiting density c0=0.089886607
+  B (1/log N)   AIC=-185.996246234   BIC=-184.718131574   implied limiting density c0=0.084694216
+
+Best model by AIC: A (power-law N^-p)
+Implied limiting density (c0) : 0.099708547
+Paper's cited conjectured density (Deshouillers-Hennecart-Landreau) : 0.0999425
+Absolute difference           : 0.000233953
+
+--- Step 6: Extrapolation beyond directly computed N (illustrative) ---
+Using the AIC-preferred model to extrapolate R(N)/N to N values far
+beyond anything computed here or in the paper's own Table 1:
+  N=1.00e+09  predicted R(N)/N = 0.1004412
+  N=1.00e+10  predicted R(N)/N = 0.1001093
+  N=1.00e+11  predicted R(N)/N = 0.0999278
+  N=1.00e+12  predicted R(N)/N = 0.0998285
+  N=1.00e+15  predicted R(N)/N = 0.0997282
+  N=1.00e+18  predicted R(N)/N = 0.0997118
+
+Caveat, stated plainly: this is EXTRAPOLATION of an empirically-fit
+curve, not a proof, and it is only as trustworthy as the assumption
+that the same functional form continues to hold far outside the
+range we actually computed — a real limitation of this technique that
+we are stating explicitly rather than hiding behind precise-looking
+decimal output.
+
+--- Summary: what the paper achieves vs. what this extension measures ---
+Paper: an entirely asymptotic-exponent story (47/54, 8/9, 11/12,
+  0.91709477...); its Table 1 is presented purely as motivating
+  numerical evidence, with no fitted functional form, no model
+  selection, and no discussion of the RATE at which R(N)/N converges.
+This extension: computes R(N) far past the paper's cleanly-tabulated
+  range using an independent parallel sieve, then applies formal
+  statistical model selection (Akaike 1974; Schwarz 1978) — to our
+  knowledge never applied to this convergence question before — to
+  determine which functional form actually best describes the
+  second-order approach of R(N)/N to its conjectured limit.
+
+Total wall-clock time        : 1.3969196 s

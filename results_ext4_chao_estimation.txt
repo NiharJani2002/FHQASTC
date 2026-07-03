@@ -1,0 +1,67 @@
+EXTENSION 4 : Nonparametric Species-Richness Estimation for R(N)
+======================================================================
+N (upper bound analysed)   : 6000000
+cbrt(N) (full search bound) : 181
+
+--- Step 1: External reference dataset (OEIS A003072) ---
+Downloaded OEIS A003072: 12955 terms.
+
+--- Step 2: Incremental sieve with 10 partial-sample checkpoints ---
+Sampling fraction here means: only triples with max(a,b,c)<=M are
+used, for M ranging over 10%,20%,...,100% of the full search bound
+cbrt(N)=181.
+
+--- Structural note: f2 (doubletons) is PROVABLY zero for rho_1 ---
+Proof sketch: a single unordered {a,b,c} contributes 1 (a=b=c), 3
+(exactly two equal) or 6 (all distinct) to the ORDERED count rho_1(n);
+at most one all-equal representation can exist per n (n=3a^3 fixes a
+uniquely). So every achievable nonzero rho_1(n) is 1+3k or 3k -- never
+===2 (mod 3) -- so rho_1(n)=2 is IMPOSSIBLE. Every f2 column below will
+read exactly 0, confirming this by direct computation, at every scale.
+Consequence: Chao's raw 1984 formula is undefined here at every N; only
+the bias-corrected variant is ever usable for this specific problem.
+
+--- Step 3: Estimator accuracy vs. true R(N), sampling-fraction sweep ---
+True R(N) (full search, M=cbrt(N)=181) : 615245
+
+M/cbrtN S_obs     f1      f2      Chao1       Chao1_bc    Jack1       Chao1 err%   Jack1 err%   Naive err%
+0.099   1064      18      0       1217.000    1217.000    1082.000    -99.802      -99.824      -99.827
+0.199   7669      36      0       8299.000    8299.000    7705.000    -98.651      -98.748      -98.754
+0.298   24972     54      0       26403.000   26403.000   25026.000   -95.709      -95.932      -95.941
+0.398   57872     72      0       60428.000   60428.000   57944.000   -90.178      -90.582      -90.594
+0.497   111541    90      0       115546.000  115546.000  111631.000  -81.220      -81.856      -81.870
+0.597   190626    107     0       196297.000  196297.000  190733.000  -68.094      -68.999      -69.016
+0.696   301152    123     0       308655.000  308655.000  301275.000  -49.832      -51.032      -51.052
+0.796   440471    123     0       447974.000  447974.000  440594.000  -27.188      -28.387      -28.407
+0.895   557421    123     0       564924.000  564924.000  557544.000  -8.179       -9.379       -9.399
+1.000   615245    123     0       622748.000  622748.000  615368.000  1.220        0.020        0.000
+
+--- Step 4: Cross-check against the paper's published Table 1 ---
+N           R(N)[paper]     R(N)[ours]      match?
+100         15              15              MATCH
+1000        126             126             MATCH
+10000       1154            1154            MATCH
+100000      10831           10831           MATCH
+1000000     104252          104252          MATCH
+
+--- Summary: what the paper achieves vs. what this extension measures ---
+Paper: proves asymptotic EXPONENT lower bounds on R(N) (47/54, 8/9,
+  11/12, 0.91709477...); never attempts to estimate R(N) itself from
+  incomplete search data — that question simply does not arise in an
+  existence-proof framework.
+This extension: cross-applies nonparametric species-richness estimators
+  from ecology/linguistics (Chao 1984; Good 1953; Efron-Thisted 1976) —
+  to our knowledge never previously applied to a Waring's-problem-type
+  counting function — and finds two honest, exact results: (1) a
+  provable structural fact (f2 is identically zero for rho_1, forcing
+  permanent reliance on the bias-corrected estimator form), and (2) a
+  large, systematic UNDERESTIMATE by every classical estimator at low
+  sampling fractions (see the error-percent columns above). That failure
+  is itself informative: these estimators assume something like random
+  subsampling, whereas our 'sample' is a deterministic geometric
+  truncation that leaves an entire unexplored REGION of large-(a,b,c)
+  triples with no statistical trace in the singleton/doubleton counts —
+  a concrete illustration of exactly how far ecological sampling theory
+  travels (and does not travel) outside its native domain.
+
+Total wall-clock time        : 0.873156 s
